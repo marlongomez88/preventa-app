@@ -42,4 +42,32 @@ router.post('/:oportunidad_id', upload.single('archivo'), async (req, res) => {
   }
 });
 
+// Subir archivo asociado a una nota
+router.post('/nota/:nota_id', upload.single('archivo'), async (req, res) => {
+  try {
+    const { nota_id } = req.params;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No se subió ningún archivo' });
+    }
+
+    const nuevoDocumento = await Documento.create({
+      nombre_archivo: req.file.originalname,
+      ruta_archivo: `/uploads/${req.file.filename}`,
+      tipo: req.file.mimetype,
+      nota_id
+    });
+
+    res.status(200).json({
+      mensaje: 'Archivo subido y registrado correctamente',
+      documento: nuevoDocumento
+    });
+  } catch (error) {
+    console.error('Error al subir archivo para nota:', error);
+    res.status(500).json({ error: 'Error al subir archivo para nota' });
+  }
+});
+
+
 module.exports = router;
+
