@@ -1,54 +1,66 @@
-import { useEffect, useState } from 'react';
-import api from '../services/api';
-import OportunidadForm from './OportunidadForm';
-import { Link } from 'react-router-dom';
+// src/components/OpportunityList.jsx
+import React from 'react';
+import Layout from './Layout';
 
-
-export default function OpportunityList() {
-  const [oportunidades, setOportunidades] = useState([]);
-
-  const cargarOportunidades = () => {
-    api.get('/oportunidades')
-      .then(res => setOportunidades(res.data))
-      .catch(err => console.error('Error al cargar oportunidades:', err));
-  };
-
-  useEffect(() => {
-    cargarOportunidades();
-  }, []);
+const OpportunityList = () => {
+  // Datos de ejemplo
+  const opportunities = [
+    { 
+      id: 1, 
+      cliente: 'Empresa ACME', 
+      monto: '$50,000', 
+      estado: 'Activo' 
+    },
+    { 
+      id: 2, 
+      cliente: 'Corporación XYZ', 
+      monto: '$75,000', 
+      estado: 'En Negociación' 
+    }
+  ];
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
-      <OportunidadForm onSuccess={cargarOportunidades} />
-      <h1 className="text-2xl font-bold text-primary mb-4">Oportunidades</h1>
-      <div className="bg-white shadow rounded overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="bg-primary text-white">
+    <Layout>
+      <div className="bg-white shadow-md rounded-lg">
+        <div className="p-4 border-b">
+          <h2 className="text-2xl font-bold">Oportunidades</h2>
+        </div>
+        <table className="w-full">
+          <thead className="bg-gray-100">
             <tr>
-              <th className="p-2 text-left">Empresa</th>
-              <th className="p-2 text-left">Contacto</th>
-              <th className="p-2 text-left">Número</th>
-              <th className="p-2 text-left">Gerente</th>
-              <th className="p-2 text-left">Estado</th>
+              <th className="p-3 text-left">ID</th>
+              <th className="p-3 text-left">Cliente</th>
+              <th className="p-3 text-left">Monto</th>
+              <th className="p-3 text-left">Estado</th>
+              <th className="p-3 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {oportunidades.map((o) => (
-              <tr key={o.id} className="border-b hover:bg-gray-100">
-                    <td className="p-2">
-                      <Link to={`/oportunidad/${o.id}`} className="text-blue-600 hover:underline">
-                        {o.empresa_cliente}
-                      </Link>
-                    </td>
-                <td className="p-2">{o.contacto}</td>
-                <td className="p-2">{o.numero_oportunidad}</td>
-                <td className="p-2">{o.gerente_cuenta}</td>
-                <td className="p-2">{o.estado}</td>
+            {opportunities.map((opp) => (
+              <tr key={opp.id} className="border-b hover:bg-gray-50">
+                <td className="p-3">{opp.id}</td>
+                <td className="p-3">{opp.cliente}</td>
+                <td className="p-3">{opp.monto}</td>
+                <td className="p-3">
+                  <span className={`
+                    px-2 py-1 rounded 
+                    ${opp.estado === 'Activo' ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'}
+                  `}>
+                    {opp.estado}
+                  </span>
+                </td>
+                <td className="p-3">
+                  <button className="text-blue-600 hover:underline">
+                    Ver Detalle
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </Layout>
   );
-}
+};
+
+export default OpportunityList;
